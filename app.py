@@ -1,4 +1,6 @@
 from flask import Flask, jsonify, request
+from ariadne import load_schema_from_path, make_executable_schema, QueryType
+from graphql_server.flask import GraphQLView
 
 app = Flask(__name__)
 
@@ -7,6 +9,31 @@ stocks = [
     { 'name': 'Dow Jones Industrial Average', 'price': 33658.77, 'ticker': 'DJIA' },
     { 'name': 'S&P 500 Index', 'price': 4352.70, 'ticker': 'SPX' }
 ]
+
+detailedData = {
+  'NDAQ': {
+    'historical_price_data': [], 
+    'highest_price': 1300, 
+    'lowest_price': 800, 
+    'trading_volume': 15
+  },
+  'DIJA': {
+    'historical_price_data': [], 
+    'highest_price': 1300, 
+    'lowest_price': 800, 
+    'trading_volume': 15
+  },
+  'SPX': {
+    'historical_price_data': [], 
+    'highest_price': 1300, 
+    'lowest_price': 800, 
+    'trading_volume': 15
+  }
+}
+
+type_defs = load_schema_from_path("schema.graphql")
+
+query = QueryType()
 
 @app.route('/')
 def welcome():
@@ -35,6 +62,17 @@ def add_stock():
         return jsonify({'new_stock': stocks[len(stocks) - 1]})
     
     return jsonify("Missing Data")
+
+@query.field("stockData")
+def resolve_get_historical_data(_, info, ticker):
+    for stock in stocks:
+        if stock[ticker] == ticker and detailedData[ticker]:
+            return detailedData[ticker]
+        
+    return None
+
+schema = make_executable_schema(type_defs, query)
+app.add_url_rule("/graphql", view_func=GraphQLView.as_view("graphql", schema=schema, graphiql=True))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)

@@ -1,0 +1,16 @@
+type Stock {
+  name: String!
+  price: Float!
+  ticker: String!
+}
+
+type detailedData {
+  historical_price_data: [Float]!
+  highest_price: Float!
+  lowest_price: Float!
+  trading_volume: Float!
+}
+
+type Query {
+  stockData(ticker: String!): detailedData!
+}
