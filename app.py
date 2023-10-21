@@ -5,31 +5,46 @@ from graphql_server.flask import GraphQLView
 app = Flask(__name__)
 
 stocks = [
-    { 'name': 'Nasdaq', 'price': 13580.87, 'ticker': 'NDAQ' },
-    { 'name': 'Dow Jones Industrial Average', 'price': 33658.77, 'ticker': 'DJIA' },
-    { 'name': 'S&P 500 Index', 'price': 4352.70, 'ticker': 'SPX' }
+    { 
+        'name': 'Nasdaq', 
+        'price': 50.60, 
+        'ticker': "NDAQ"
+    },
+    { 
+        'name': 'Dow Jones Industrial Average', 
+        'price': 33127.28, 
+        'ticker': "DJIA"
+    },
+    { 
+        'name': 'S&P 500 Index', 
+        'price': 4224.16, 
+        'ticker': "SPX"
+    }
 ]
 
-detailedData = {
-  'NDAQ': {
-    'historical_price_data': [], 
-    'highest_price': 1300, 
-    'lowest_price': 800, 
-    'trading_volume': 15
+detailedData = [
+  {
+    'ticker': 'NDAQ',
+    'historical_price_data': [],
+    'highest_price': 68.97, 
+    'lowest_price': 46.88, 
+    'trading_volume': 4046593000
   },
-  'DIJA': {
+  {
+    'ticker': 'DIJA',
     'historical_price_data': [], 
-    'highest_price': 1300, 
-    'lowest_price': 800, 
-    'trading_volume': 15
+    'highest_price': 36799.65, 
+    'lowest_price': 59.93, 
+    'trading_volume': 330150558
   },
-  'SPX': {
+  {
+    'ticker': 'SPX',
     'historical_price_data': [], 
-    'highest_price': 1300, 
-    'lowest_price': 800, 
-    'trading_volume': 15
+    'highest_price': 4796.56, 
+    'lowest_price': 4.40, 
+    'trading_volume': 2737578858
   }
-}
+]
 
 type_defs = load_schema_from_path("schema.graphql")
 
@@ -52,10 +67,10 @@ def add_stock():
     
     if data.get('name') and data.get('ticker') and data.get('price'):
         stocks.append(
-            { 
-                'name': data.get('name'), 
-                'ticker': data.get('ticker'), 
-                'price': data.get('price')
+            {
+                'name': data.get('name'),
+                'ticker': data.get('ticker'),
+                'price': data.get('price'),
             }
         )
 
@@ -63,11 +78,15 @@ def add_stock():
     
     return jsonify("Missing Data")
 
-@query.field("stockData")
-def resolve_get_historical_data(_, info, ticker):
-    for stock in stocks:
-        if stock[ticker] == ticker and detailedData[ticker]:
-            return detailedData[ticker]
+@query.field("stocks")
+def resolve_get_stocks(*_):
+    return stocks
+
+@query.field("detailedData")
+def resolve_get_detailedData(_, info, ticker):
+    for data in detailedData:
+        if data['ticker'] == ticker:
+            return data
         
     return None
 
@@ -75,4 +94,4 @@ schema = make_executable_schema(type_defs, query)
 app.add_url_rule("/graphql", view_func=GraphQLView.as_view("graphql", schema=schema, graphiql=True))
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5001)
+    app.run(host='0.0.0.0', port=5001, debug=True)

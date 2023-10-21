@@ -4,7 +4,8 @@ type Stock {
   ticker: String!
 }
 
-type detailedData {
+type DetailedData {
+  ticker: String!
   historical_price_data: [Float]!
   highest_price: Float!
   lowest_price: Float!
@@ -12,5 +13,6 @@ type detailedData {
 }
 
 type Query {
-  stockData(ticker: String!): detailedData!
+  stocks: [Stock]!
+  detailedData(ticker: String): DetailedData!
 }
