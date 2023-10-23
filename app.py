@@ -25,21 +25,39 @@ stocks = [
 detailedData = [
   {
     'ticker': 'NDAQ',
-    'historical_price_data': [],
+    'historical_price_data': [
+        13,018.33,
+        12,983.81,
+        13,186.18,
+        13,314.30,
+        13,533.75
+    ],
     'highest_price': 68.97, 
     'lowest_price': 46.88, 
     'trading_volume': 4046593000
   },
   {
     'ticker': 'DIJA',
-    'historical_price_data': [], 
+    'historical_price_data': [
+        32,936.41,
+        33,127.28,
+        33,414.17,
+        33,665.08,
+        33,997.65
+    ], 
     'highest_price': 36799.65, 
     'lowest_price': 59.93, 
     'trading_volume': 330150558
   },
   {
     'ticker': 'SPX',
-    'historical_price_data': [], 
+    'historical_price_data': [
+        4,217.04,
+        4,224.16,
+        4,278.00,
+        4,314.60,
+        4,373.20
+    ], 
     'highest_price': 4796.56, 
     'lowest_price': 4.40, 
     'trading_volume': 2737578858
